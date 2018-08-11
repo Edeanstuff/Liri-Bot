@@ -4,22 +4,25 @@ var keys = require('./keys.js');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var omdb = require("omdb");
+var fs = require("fs");
 if(process.argv[2]==="my-tweets") {
     console.log("you are looking at my tweets");
-    tweets();
+    tweets(process.argv[3]);
 }else if (process.argv[2]==="spotify-this-song") {
     console.log("you are looking up a song.")
-    spotit();
+    spotit(process.argv[3]);
 }else if (process.argv[2]==="movie-this") {
     console.log("movie thing")
+    ombd(process.argv[3]);
 }else if (process.argv[2]=== "do-what-it-says") {
     console.log("do your thing");
+    doit();
 }else {
     console.log("This is not a valid command.");
 }
-function tweets() {
+function tweets(person) {
     var client = new Twitter(keys.twitter);
-    var param = {screen_name: process.argv[3], count: 20};
+    var param = {screen_name: person, count: 20};
 
      client.get('statuses/user_timeline/', param, function(error, 
      tweets, response) {
@@ -36,9 +39,9 @@ function tweets() {
          }
      });
  }
- function spotit() {
+ function spotit(song) {
     var spotify = new Spotify(keys.spotify);
-    spotify.search({ type: 'artist,track,album', query: process.argv[3], limit: 1}, function(err,data) {
+    spotify.search({ type: 'artist,track,album', query: song, limit: 1}, function(err,data) {
         if (err) {
             throw err;
         }else {
@@ -49,3 +52,30 @@ function tweets() {
         }
       });
  }
+ function ombd (movie) {
+    request("http://www.omdbapi.com/?t=" + movie + "&apikey=1966280d", function(error, response, body) {
+    console.log("Title: " + JSON.parse(body).Title);
+    console.log("Year Realeased : " + JSON.parse(body).Year);
+    console.log("IMDB Rating : " + JSON.parse(body).imdbRating);
+    console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].Value);
+    console.log("Language: " + JSON.parse(body).Language);
+    console.log("Plot: " + JSON.parse(body).Plot);
+    console.log("Actors: " + JSON.parse(body).Actors);
+  })
+}
+function doit() {
+    fs.readFile('random.txt', "UTF-8", function read(err, data) {
+        if (err) {
+            throw err;
+        }    
+        var array = data.split(",");
+        if(array[0]==="spotify-this-song"){
+            spotit(array[1]);
+        }else if (array[0]==="my-tweets") {
+            tweets(array[1]);
+        }else if(array[0]==="movie-this") {
+            ombd(array[1]);
+        }
+        
+    });
+}

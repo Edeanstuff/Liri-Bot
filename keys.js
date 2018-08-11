@@ -13,5 +13,5 @@ exports.spotify = {
   secret: "65f84dfb485b4e5e874d14ecc48cb65b"
 };
 exports.omdb = {
-    key: "1966280d"
+    apiKey: "1966280d"
 }
