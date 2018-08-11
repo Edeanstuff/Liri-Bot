@@ -6,16 +6,12 @@ var Spotify = require('node-spotify-api');
 var omdb = require("omdb");
 var fs = require("fs");
 if(process.argv[2]==="my-tweets") {
-    console.log("you are looking at my tweets");
     tweets(process.argv[3]);
 }else if (process.argv[2]==="spotify-this-song") {
-    console.log("you are looking up a song.")
     spotit(process.argv[3]);
 }else if (process.argv[2]==="movie-this") {
-    console.log("movie thing")
     ombd(process.argv[3]);
 }else if (process.argv[2]=== "do-what-it-says") {
-    console.log("do your thing");
     doit();
 }else {
     console.log("This is not a valid command.");
